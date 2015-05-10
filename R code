@@ -1,0 +1,34 @@
+install.packages("plspm")
+install.packages("plsdepot")
+library("plspm")
+my.dat <- read.csv("SEMdat.csv")
+
+#inner plot - path matrix
+HealthBehav = c(0, 0, 0, 0, 0) #Leisure time exercise 
+#in last 30 days and 5 fruits and vegetables a day
+UnhealthBehav = c(0, 0, 0, 0, 0) #Obese and smokers
+ChildWeight = c(1, 1, 0, 0, 0) #Overweight and obese 
+#students in elementary and middle to high school
+HeartHosp = c(1, 1, 0, 0, 0) #Cardiovascular or 
+#cerebrovascular disease hospitalization
+HeartMort = c(1, 1, 0, 1, 0) #Cardiovascular or 
+#cerebrovascular disease death
+#creating the matrix by binding rows
+health_path = rbind(HealthBehav, UnhealthBehav, ChildWeight, HeartHosp, HeartMort)
+colnames(health_path) = rownames(health_path)
+#Indicators for each measure
+health_blocks = list(9:10, c(8, 2), 12:15, 5:6, 3:4)
+#marking indicators as reflective
+health_modes = rep("A", 5)
+#run
+health_pls = plspm(my.dat, health_path, health_blocks, modes = health_modes)
+plot(health_pls)
+
+#Values listed out
+health_pls$outer_model
+health_pls$inner_model
+
+#Goodness of fit
+health_pls$gof
+#Checking the quality of indicators
+plot(health_pls, what = "loadings")
